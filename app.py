@@ -122,7 +122,6 @@ def english():
     if session["start"] == False:
         clear_session_data( )
         initialize_session_data( )
-    
     if len(session["options"]) == 0:
         session["target_language"] = "Turkish"
         session["main_language"] = "English"
@@ -170,7 +169,6 @@ def past_work():
     data = db.session.query(User, Analysis).join(Analysis).all( )
     
     return render_template("past_work.html", data=data)
-
 
 @app.route("/past_work/<int:id>")
 def past_work_analysis(id):
@@ -246,7 +244,13 @@ def dashboard():
 def insert_word():
     form = InsertWord(request.form)
     if request.method == "POST":
-        pass
+        word = form.word.data
+        opposite = form.opposite.data
+        new_word = EnglishWord(english_word =word,turkish_word = opposite)
+        db.session.add(new_word)
+        db.session.commit()
+        flash("New word insertion successful!","success")
+        return redirect(url_for("insert_word"))
     return render_template("insertWord.html",form=form)
 
 

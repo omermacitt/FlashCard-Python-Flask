@@ -56,23 +56,25 @@
         <div class="content-container">
             <div class="row">
                 <div class="col-5">
-                    {% for wtg in session["word_to_guess"][0] %}
-                        <div class="box"> {{ wtg }}</div>
-                    {% endfor %}
+                    <div class="box"> {{ session["word_to_guess"][0] }}</div>
                 </div>
                 <div class="col-7">
                     <div class="container">
                         <div class="row">
-                            <button class="btn btn-smallbox smallbox" name="user_choice" value="{{ session["options"][0][0] }}">{{ session["options"][0][0] }}</button>
+                            <button class="btn btn-smallbox smallbox" name="user_choice"
+                                    value="{{ session["options"][0][0] }}">{{ session["options"][0][0] }}</button>
                         </div>
                         <div class="row">
-                            <button class="btn btn-smallbox smallbox" name="user_choice" value="{{ session["options"][0][1] }}">{{ session["options"][0][1] }}</button>
+                            <button class="btn btn-smallbox smallbox" name="user_choice"
+                                    value="{{ session["options"][0][1] }}">{{ session["options"][0][1] }}</button>
                         </div>
                         <div class="row">
-                            <button class="btn btn-smallbox smallbox" name="user_choice" value="{{ session["options"][0][2] }}">{{ session["options"][0][2] }}</button>
+                            <button class="btn btn-smallbox smallbox" name="user_choice"
+                                    value="{{ session["options"][0][2] }}">{{ session["options"][0][2] }}</button>
                         </div>
                         <div class="row">
-                            <button class="btn btn-smallbox smallbox" name="user_choice" value="{{ session["options"][0][3] }}">{{ session["options"][0][3] }}</button>
+                            <button class="btn btn-smallbox smallbox" name="user_choice"
+                                    value="{{ session["options"][0][3] }}">{{ session["options"][0][3] }}</button>
                         </div>
                     </div>
                 </div>

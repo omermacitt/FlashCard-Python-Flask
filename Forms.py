@@ -52,6 +52,10 @@ class LoginForm(Form):
 
 class InsertWord(Form):
     word = StringField("Word", validators=[validators.DataRequired(message="Lütfen bu alanı doldurunuz.")],
-                       render_kw={"placeholder":"Kelime"})
+                       render_kw={
+                           "placeholder": "Kelime", "style": "width:420px;height:40px;margin-left:60px"
+                       })
     opposite = StringField("Opposite",validators=[validators.DataRequired(message="Lütfen bu alanı doldurunuz.")],
-                           render_kw={"placeholder":"Karşılığı"})
+                           render_kw={
+                               "placeholder": "Karşılığı", "style": "width:420px;height:40px;margin-left:60px"
+                           })

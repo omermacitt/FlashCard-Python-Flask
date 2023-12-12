@@ -31,7 +31,7 @@
             <td>{{ data[index][1]["correct_options_count"]+data[index][1]["wrong_options_count"] }}</td>
             <td>{{ data[index][1]["correct_options_count"] }}</td>
             <td>{{ data[index][1]["wrong_options_count"] }}</td>
-            <td>{{ data[index][1]["correct_options_count"] /(data[index][1]["correct_options_count"]+data[index][1]["wrong_options_count"]) }}</td>
+            <td>{{ "{:.2f}".format(data[index][1]["correct_options_count"] / (data[index][1]["correct_options_count"] + data[index][1]["wrong_options_count"])) }}</td>
             <td>{{ data[index][1]["passing_time"] }}</td>
         </tr>
     {% endfor %}
