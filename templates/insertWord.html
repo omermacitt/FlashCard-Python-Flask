@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+{% include 'navbar.html' %}
+<div class="container mt-2">
+    <div class="row justify-content-center align-items-center">
+        <div class="col-6">
+            {% from "./includes/formhelpers.html" import render_field %}
+            <form method="post">
+                <dl>
+                    {{ render_field(form.word) }}
+                    {{ render_field(form.opposite) }}
+                </dl>
+            </form>
+            <p><a href="/sign_in"><input class="btn" type="submit" value="Kaydet"
+                                        style="width: 420px; height: 40px;margin-left:60px;border-color: blue;color: blue"></a>
+            </p>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

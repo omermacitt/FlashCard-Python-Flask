@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Document</title>
+</head>
+<body>
+{% include 'navbar.html' %}
+
+
+<h4 style="text-align: center;color: #005cbf" class="mb-5">Yapılan İşlemler</h4>
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col"></th>
+        <th scope="col">İngilizce</th>
+        <th scope="col">Türkçe</th>
+        <th scope="col">Seçim</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for foo in range(correct_words|length) %}
+        {% set background_color = "#23D59A" if correct_words[foo] == predictions[foo] else "#E94848" %}
+        <tr style="background-color: {{ background_color }};color: white">
+            <th scope="row">{{ loop.index }}</th>
+            <th>{{ words[foo] }}</th>
+            <th>{{ correct_words[foo] }}</th>
+            <th>{{ predictions[foo] }}</th>
+        </tr>
+    {% endfor %}
+
+
+    </tbody>
+</table>
+
+<div class="d-flex justify-content-center align-items-center mt-5">
+    <a href="/english">
+        <button class="btn btn-info">Geri Dön</button>
+    </a>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+</html>

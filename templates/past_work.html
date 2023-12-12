@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+{% include 'navbar.html' %}
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col"></th>
+        <th scope="col">Nickname</th>
+        <th scope="col">Uygulanan İşlem</th>
+        <th scope="col">Kelime Sayısı</th>
+        <th scope="col">Doğru Sayısı</th>
+        <th scope="col">Yanlış Sayısı</th>
+        <th scope="col">Başarı</th>
+        <th scope="col">Çözüm Süresi</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for index in range(data|length) %}
+
+        <tr>
+            <th scope="row"><a href="/past_work/{{ data[index][1].id }}">{{ index+ 1 }}</a></th>
+            <td>{{ data[index][0]["nickname"] }}</td>
+            <td>{{ data[index][1]["main_language"] }}-{{ data[index][1]["target_language"] }}</td>
+            <td>{{ data[index][1]["correct_options_count"]+data[index][1]["wrong_options_count"] }}</td>
+            <td>{{ data[index][1]["correct_options_count"] }}</td>
+            <td>{{ data[index][1]["wrong_options_count"] }}</td>
+            <td>{{ data[index][1]["correct_options_count"] /(data[index][1]["correct_options_count"]+data[index][1]["wrong_options_count"]) }}</td>
+            <td>{{ data[index][1]["passing_time"] }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<body>
+
+</body>
+</html>
