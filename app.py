@@ -57,24 +57,39 @@ class Analysis(db.Model):
     analysis_date = db.Column(db.DateTime, default=datetime.utcnow( ), nullable=False)
 
 
-def get_random_choices(correct_word):
-    incorrect_words = (
-        EnglishWord.query.filter(EnglishWord.turkish_word != correct_word).order_by(db.func.random( )).limit(3).all( )
-    )
-    all_choices = [correct_word] + [word.turkish_word for word in incorrect_words]
-    random.shuffle(all_choices)
+def get_random_choices(correct_word,language = "English"):
+    all_choices = list()
+    if language == "English":
+        incorrect_words = (
+            EnglishWord.query.filter(EnglishWord.turkish_word != correct_word).order_by(db.func.random( )).limit(3).all( )
+        )
+        all_choices.extend([correct_word] + [word.turkish_word for word in incorrect_words])
+        random.shuffle(all_choices)
+    elif language == "Turkish":
+        incorrect_words = (
+            EnglishWord.query.filter(EnglishWord.english_word != correct_word).order_by(db.func.random( )).limit(3).all( )
+        )
+        all_choices.extend([correct_word] + [word.english_word for word in incorrect_words])
+        random.shuffle(all_choices)
     return all_choices
 
 
-def get_all_data_list(words):
+def get_all_data_list(words,language = "English"):
     options = []
     correct_words = []
     word_to_guess = []
-    for word in words:
-        choices = get_random_choices(word.turkish_word)
-        options.append(choices)
-        correct_words.append(word.turkish_word)
-        word_to_guess.append(word.english_word)
+    if language == "English":
+        for word in words:
+            choices = get_random_choices(word.turkish_word)
+            options.append(choices)
+            correct_words.append(word.turkish_word)
+            word_to_guess.append(word.english_word)
+    elif language == "Turkish":
+        for word in words:
+            choices = get_random_choices(word.english_word)
+            options.append(choices)
+            correct_words.append(word.english_word)
+            word_to_guess.append(word.turkish_word)
     return options, correct_words, word_to_guess
 
 
@@ -90,10 +105,10 @@ def clear_session_data():
     session["start"] = False
 
 
-def initialize_session_data():
+def initialize_session_data(language="English"):
     if "options" not in session:
         words = EnglishWord.query.all( )
-        options, correct_words, word_to_guess = get_all_data_list(words=words)
+        options, correct_words, word_to_guess = get_all_data_list(words=words,language=language)
         random_number = random.randint(1, 1000000000)
         random.seed(random_number)
         random.shuffle(options)
@@ -109,11 +124,18 @@ def initialize_session_data():
         session["predictions"] = list( )
         session["start"] = True
         session["start_flashcard_time"] = datetime.now( )
+        if language == "English":
+            session["target_language"] = "Turkish"
+            session["main_language"] = "English"
+        elif language == "Turkish":
+            session["target_language"] = "English"
+            session["main_language"] = "Turkish"
 
 
 @app.route("/")
 def index():
-    return render_template("hello.html", session=session)
+    print(session)
+    return render_template("hello.html")
 
 
 @app.route("/english")
@@ -123,12 +145,21 @@ def english():
         clear_session_data( )
         initialize_session_data( )
     if len(session["options"]) == 0:
-        session["target_language"] = "Turkish"
-        session["main_language"] = "English"
         session["end_flashcard_time"] = datetime.now( )
         return redirect(url_for("analysis"))
     return render_template("index.html", session=session)
 
+@app.route("/turkish")
+@login_required
+def turkish():
+    print(session)
+    if session["start"] == False:
+        clear_session_data( )
+        initialize_session_data("Turkish")
+    if len(session["options"]) == 0:
+        session["end_flashcard_time"] = datetime.now( )
+        return redirect(url_for("analysis"))
+    return render_template("index.html", session=session)
 
 @app.route("/analysis")
 def analysis():
@@ -160,7 +191,7 @@ def compare():
         session["counter"] -= 1
         session["predictions"].append(request.form.get("user_choice"))
         session.modified = True
-    return redirect(url_for("english"))
+    return redirect(url_for("{}".format(session["main_language"].lower())))
 
 
 @app.route("/past_work")
