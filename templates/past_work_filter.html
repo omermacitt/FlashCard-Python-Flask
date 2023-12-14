@@ -33,7 +33,9 @@
                 {% set unique_nicknames = [] %}
                 {% for user, analysis in data %}
                     {% if user.nickname not in unique_nicknames %}
-                        <option value="{{ user.nickname }}">{{ user.nickname }}</option>
+                        <option value="{{ user.nickname }}"
+                                {% if user.nickname in filter_criteria['nickname'] %}selected{% endif %}>{{ user.nickname }}</option>
+
                         {% set _ = unique_nicknames.append(user.nickname) %}
                     {% endif %}
                 {% endfor %}
@@ -51,7 +53,9 @@
                 {% for user, analysis in data %}
                     {% set language_pair = analysis.main_language ~ "-" ~ analysis.target_language %}
                     {% if language_pair not in unique_languages %}
-                        <option value="{{ language_pair }}">{{ language_pair }}</option>
+                        <option value="{{ analysis.process }}"
+                                {% if analysis.process in filter_criteria['process'] %}selected{% endif %}>{{ analysis.process }}</option>
+
                         {% set _ = unique_languages.append(language_pair) %}
                     {% endif %}
                 {% endfor %}
@@ -62,10 +66,14 @@
         <div style="display: inline-block;">
             <label for="exampleSelect3">Kelime Sayısı</label>
             <br>
-            <select data-placeholder="Kelime Sayısı" class="chosen-select"  tabindex="-1" id="exampleSelect3"
+            <select data-placeholder="Kelime Sayısı" class="chosen-select" tabindex="-1" id="exampleSelect3"
                     name="word_count">
-                <option value="Çoktan Aza">Çoktan Aza</option>
-                <option value="Azdan Çoğa">Azdan Çoğa</option>
+                <option value="Çoktan Aza" {% if 'Çoktan Aza' in filter_criteria['word_count'] %}selected{% endif %}>
+                    Çoktan Aza
+                </option>
+                <option value="Azdan Çoğa" {% if 'Azdan Çoğa' in filter_criteria['word_count'] %}selected{% endif %}>
+                    Azdan Çoğa
+                </option>
             </select>
         </div>
 
@@ -73,7 +81,7 @@
         <div style="display: inline-block;">
             <label for="exampleSelect4">Doğru Sayısı</label>
             <br>
-            <select data-placeholder="Doğru Sayısı" class="chosen-select"  tabindex="-1" id="exampleSelect4"
+            <select data-placeholder="Doğru Sayısı" class="chosen-select" tabindex="-1" id="exampleSelect4"
                     name="correct_count">
                 <option value="Çoktan Aza">Çoktan Aza</option>
                 <option value="Azdan Çoğa">Azdan Çoğa</option>
@@ -115,9 +123,11 @@
         <br>
         <div style="display: inline-block;">
             <p class="text-center mt-5">
-                <input class="btn bg-primary" type="submit" value="Filtrele" style="color: white; width: 200px; height: 40px;">
+                <input class="btn bg-primary" type="submit" value="Filtrele"
+                       style="color: white; width: 200px; height: 40px;">
                 <a href="/past_work">
-                    <button type="button" class="btn btn-primary" style="color: white; width: 200px; height: 40px; margin-left: 10px;">
+                    <button type="button" class="btn btn-primary"
+                            style="color: white; width: 200px; height: 40px; margin-left: 10px;">
                         Filtreyi Kaldır
                     </button>
                 </a>
@@ -143,16 +153,16 @@
     </tr>
     </thead>
     <tbody>
-    {% for index in range(data|length) %}
+    {% for index in range(data2|length) %}
         <tr>
-            <th scope="row"><a href="/past_work/{{ data[index][1].id }}">{{ index+ 1 }}</a></th>
-            <td>{{ data[index][0]["nickname"] }}</td>
-            <td>{{ data[index][1]["main_language"] }}-{{ data[index][1]["target_language"] }}</td>
-            <td>{{ data[index][1]["correct_options_count"]+data[index][1]["wrong_options_count"] }}</td>
-            <td>{{ data[index][1]["correct_options_count"] }}</td>
-            <td>{{ data[index][1]["wrong_options_count"] }}</td>
-            <td>{{ "{:.2f}".format(data[index][1]["success_rate"]) }}</td>
-            <td>{{ data[index][1]["passing_time"] }}</td>
+            <th scope="row"><a href="/past_work/{{ data2[index][1].id }}">{{ index+ 1 }}</a></th>
+            <td>{{ data2[index][0]["nickname"] }}</td>
+            <td>{{ data2[index][1]["main_language"] }}-{{ data2[index][1]["target_language"] }}</td>
+            <td>{{ data2[index][1]["correct_options_count"]+data2[index][1]["wrong_options_count"] }}</td>
+            <td>{{ data2[index][1]["correct_options_count"] }}</td>
+            <td>{{ data2[index][1]["wrong_options_count"] }}</td>
+            <td>{{ "{:.2f}".format(data2[index][1]["success_rate"]) }}</td>
+            <td>{{ data2[index][1]["passing_time"] }}</td>
         </tr>
     {% endfor %}
     </tbody>

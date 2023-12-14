@@ -3,7 +3,7 @@ import time
 
 from flask import Flask, render_template, redirect, url_for, request, session, flash
 from flask_sqlalchemy import SQLAlchemy
-from Forms import LoginForm, RegisterForm,InsertWord
+from Forms import LoginForm, RegisterForm, InsertWord
 from passlib.hash import sha256_crypt
 from datetime import datetime
 from functools import wraps
@@ -46,6 +46,7 @@ class User(db.Model):
 class Analysis(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    process = db.Column(db.String(100), nullable=False)
     main_language = db.Column(db.String(30), nullable=False)
     target_language = db.Column(db.String(30), nullable=False)
     words = db.Column(db.String(255), nullable=False)
@@ -54,27 +55,32 @@ class Analysis(db.Model):
     correct_options = db.Column(db.String(255), nullable=False)
     selected_options = db.Column(db.String(255), nullable=False)
     passing_time = db.Column(db.String(255), nullable=False)
+    success_rate = db.Column(db.Float, nullable=False)
     analysis_date = db.Column(db.DateTime, default=datetime.utcnow( ), nullable=False)
+    words_count = db.Column(db.Integer, nullable=False)
+    
 
-
-def get_random_choices(correct_word,language = "English"):
-    all_choices = list()
+    
+def get_random_choices(correct_word, language="English"):
+    all_choices = list( )
     if language == "English":
         incorrect_words = (
-            EnglishWord.query.filter(EnglishWord.turkish_word != correct_word).order_by(db.func.random( )).limit(3).all( )
+            EnglishWord.query.filter(EnglishWord.turkish_word != correct_word).order_by(db.func.random( )).limit(
+                3).all( )
         )
         all_choices.extend([correct_word] + [word.turkish_word for word in incorrect_words])
         random.shuffle(all_choices)
     elif language == "Turkish":
         incorrect_words = (
-            EnglishWord.query.filter(EnglishWord.english_word != correct_word).order_by(db.func.random( )).limit(3).all( )
+            EnglishWord.query.filter(EnglishWord.english_word != correct_word).order_by(db.func.random( )).limit(
+                3).all( )
         )
         all_choices.extend([correct_word] + [word.english_word for word in incorrect_words])
         random.shuffle(all_choices)
     return all_choices
 
 
-def get_all_data_list(words,language = "English"):
+def get_all_data_list(words, language="English"):
     options = []
     correct_words = []
     word_to_guess = []
@@ -108,7 +114,7 @@ def clear_session_data():
 def initialize_session_data(language="English"):
     if "options" not in session:
         words = EnglishWord.query.all( )
-        options, correct_words, word_to_guess = get_all_data_list(words=words,language=language)
+        options, correct_words, word_to_guess = get_all_data_list(words=words, language=language)
         random_number = random.randint(1, 1000000000)
         random.seed(random_number)
         random.shuffle(options)
@@ -134,7 +140,6 @@ def initialize_session_data(language="English"):
 
 @app.route("/")
 def index():
-    print(session)
     return render_template("hello.html")
 
 
@@ -149,10 +154,10 @@ def english():
         return redirect(url_for("analysis"))
     return render_template("index.html", session=session)
 
+
 @app.route("/turkish")
 @login_required
 def turkish():
-    print(session)
     if session["start"] == False:
         clear_session_data( )
         initialize_session_data("Turkish")
@@ -160,6 +165,7 @@ def turkish():
         session["end_flashcard_time"] = datetime.now( )
         return redirect(url_for("analysis"))
     return render_template("index.html", session=session)
+
 
 @app.route("/analysis")
 def analysis():
@@ -175,7 +181,8 @@ def analysis():
                                correct_options_count=TF_LIST.count(True),
                                wrong_options_count=TF_LIST.count(False), selected_options=session["predictions"],
                                correct_options=session["correct_words"],
-                               passing_time=session["end_flashcard_time"] - session["start_flashcard_time"])
+                               passing_time=session["end_flashcard_time"] - session["start_flashcard_time"],
+                               success_rate=TF_LIST.count(True) / len(TF_LIST))
     
     db.session.add(analysis_object)
     db.session.commit( )
@@ -191,7 +198,7 @@ def compare():
         session["counter"] -= 1
         session["predictions"].append(request.form.get("user_choice"))
         session.modified = True
-    return redirect(url_for("{}".format(session["main_language"].lower())))
+    return redirect(url_for("{}".format(session["main_language"].lower( ))))
 
 
 @app.route("/past_work")
@@ -200,6 +207,7 @@ def past_work():
     data = db.session.query(User, Analysis).join(Analysis).all( )
     
     return render_template("past_work.html", data=data)
+
 
 @app.route("/past_work/<int:id>")
 def past_work_analysis(id):
@@ -210,6 +218,48 @@ def past_work_analysis(id):
     clear_session_data( )
     return render_template("analysis.html", correct_words=correct_words, predictions=predictions,
                            words=words)
+
+
+@app.route("/past_work_filter", methods=["POST"])
+def past_work_filter():
+    filter_criteria = {
+        "nickname": request.form.getlist("nickname"),
+        "process": request.form.getlist("process"),
+        "words_count": request.form.get("word_count"),
+        "correct_options_count": request.form.get("correct_count"),
+        "wrong_options_count": request.form.get("wrong_count"),
+        "success_rate": request.form.get("success_rate"),
+        "passing_time": request.form.get("time"),
+    }
+    query = db.session.query(User, Analysis).join(Analysis)
+    print(filter_criteria)
+    for key, value in filter_criteria.items():
+        if value is not None:
+            if key in ["correct_options_count", "words_count", "wrong_options_count", "success_rate", "passing_time"]:
+                if value == "Çoktan Aza":
+                    query = query.order_by(getattr(Analysis, key).desc())
+                else:
+                    query = query.order_by(getattr(Analysis, key).asc())
+            elif key == "nickname":
+                # Kullanıcı bir nickname seçmişse filtreleme işlemi yap
+                if value:
+                    if isinstance(value, list):
+                        query = query.filter(getattr(User, key).in_(value))
+                    else:
+                        query = query.filter(getattr(User, key) == value)
+            elif key == "process":
+                # Kullanıcı bir nickname seçmişse filtreleme işlemi yap
+                if value:
+                    if isinstance(value, list):
+                        query = query.filter(getattr(Analysis, key).in_(value))
+                    else:
+                        query = query.filter(getattr(Analysis, key) == value)
+
+    data = db.session.query(User, Analysis).join(Analysis).all()
+
+    return render_template("past_work_filter.html", data2=query.all(), data=data,filter_criteria = filter_criteria)
+
+
 
 
 @app.route("/sign_in", methods=["POST", "GET"])
@@ -270,19 +320,19 @@ def dashboard():
     return render_template("dashboard.html", data=data)
 
 
-@app.route("/insert_word", methods=["POST","GET"])
+@app.route("/insert_word", methods=["POST", "GET"])
 @login_required
 def insert_word():
     form = InsertWord(request.form)
     if request.method == "POST":
         word = form.word.data
         opposite = form.opposite.data
-        new_word = EnglishWord(english_word =word,turkish_word = opposite)
+        new_word = EnglishWord(english_word=word, turkish_word=opposite)
         db.session.add(new_word)
-        db.session.commit()
-        flash("New word insertion successful!","success")
+        db.session.commit( )
+        flash("New word insertion successful!", "success")
         return redirect(url_for("insert_word"))
-    return render_template("insertWord.html",form=form)
+    return render_template("insertWord.html", form=form)
 
 
 if __name__ == '__main__':
