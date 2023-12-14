@@ -15,7 +15,7 @@ Projeyi yerel makinenizde çalıştırmak için aşağıdaki adımları izleyebi
 1. Depoyu yerel makinenize klonlayın:
 
    ```bash
-   git clone [https://github.com/omermacitt/adinizin-flashcard-uygulamasi](https://github.com/omermacitt/FlashCard-Python-Flask).git
+   git clone https://github.com/omermacitt/adinizin-flashcard-uygulamasi.git
 
 2. Proje dizinine gidin
    ```bash
