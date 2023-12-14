@@ -1,11 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="user_choice" value="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <title>Hello, world!</title>
+    <title>Hello world</title>
     <style>
         body {
             margin: 0;
@@ -22,67 +24,23 @@
             height: 100vh;
         }
 
-        .content-container {
-            width: 80%; /* Adjust the width as needed */
-        }
-
-        .box {
-            border-radius: 10px;
-            border: 1px solid #ccc;
-            padding: 15px;
-            margin: 5px;
-            height: 100%;
-        }
-
-        .smallbox {
-            border-radius: 3px;
-            border: 1px solid #ccc;
-            padding: 25px;
-            margin: 15px;
-            width: 100%;
-        }
-
-        .btn-smallbox {
-            width: 100%;
+        .btn {
+            margin-right: 25px;
+            height: 100px;
         }
     </style>
 </head>
 <body>
-
-<!-- Bootstrap Navbar -->
 {% include 'navbar.html' %}
-<form action="/compare" method="post">
-    <div class="center-content">
-        <div class="content-container">
-            <div class="row">
-                <div class="col-5">
-                    <div class="box"> {{ session["word_to_guess"][0] }}</div>
-                </div>
-                <div class="col-7">
-                    <div class="container">
-                        <div class="row">
-                            <button class="btn btn-smallbox smallbox" name="user_choice"
-                                    value="{{ session["options"][0][0] }}">{{ session["options"][0][0] }}</button>
-                        </div>
-                        <div class="row">
-                            <button class="btn btn-smallbox smallbox" name="user_choice"
-                                    value="{{ session["options"][0][1] }}">{{ session["options"][0][1] }}</button>
-                        </div>
-                        <div class="row">
-                            <button class="btn btn-smallbox smallbox" name="user_choice"
-                                    value="{{ session["options"][0][2] }}">{{ session["options"][0][2] }}</button>
-                        </div>
-                        <div class="row">
-                            <button class="btn btn-smallbox smallbox" name="user_choice"
-                                    value="{{ session["options"][0][3] }}">{{ session["options"][0][3] }}</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</form>
-
+{% include 'includes/messages.html' %}
+<div style="text-align: center" class="center-content">
+    <a href="/english">
+        <button type="button" class="btn btn-primary">English to Turkish</button>
+    </a>
+    <a href="/turkish">
+        <button type="button" class="btn btn-secondary">Turkish to English</button>
+    </a>
+</div>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
         crossorigin="anonymous"></script>

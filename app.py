@@ -146,7 +146,7 @@ def initialize_session_data(language="English"):
 # main page
 @app.route("/")
 def index():
-    return render_template("hello.html")
+    return render_template("index.html")
 
 # where the words are in English and the meaning is in Turkish
 @app.route("/english")
@@ -158,7 +158,7 @@ def english():
     if len(session["options"]) == 0:
         session["end_flashcard_time"] = datetime.now()
         return redirect(url_for("analysis"))
-    return render_template("index.html", session=session)
+    return render_template("application.html", session=session)
 
 
 # where the words are in Turkish and the meaning is in English
@@ -171,7 +171,7 @@ def turkish():
     if len(session["options"]) == 0:
         session["end_flashcard_time"] = datetime.now()
         return redirect(url_for("analysis"))
-    return render_template("index.html", session=session)
+    return render_template("application.html", session=session)
 
 
 # when the words run out, url where form data is sent and where it's recorded in the database
