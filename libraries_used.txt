@@ -1,0 +1,23 @@
+argon2-cffi==19.1.0
+bcrypt @ file:///tmp/abs_6fpe92qzzo/croots/recipe/bcrypt_1659554336150/work
+blinker==1.7.0
+cffi @ file:///tmp/abs_98z5h56wf8/croots/recipe/cffi_1659598650955/work
+click==8.1.7
+cryptography @ file:///croot/cryptography_1694444244250/work
+Flask==3.0.0
+Flask-SQLAlchemy==3.1.1
+greenlet==3.0.1
+importlib-metadata==7.0.0
+itsdangerous==2.1.2
+Jinja2==3.1.2
+MarkupSafe @ file:///opt/conda/conda-bld/markupsafe_1654597864307/work
+passlib==1.7.4
+psycopg2-binary==2.9.9
+pycparser @ file:///tmp/build/80754af9/pycparser_1636541352034/work
+python-dotenv==1.0.0
+six @ file:///tmp/build/80754af9/six_1644875935023/work
+SQLAlchemy==2.0.23
+typing_extensions==4.8.0
+Werkzeug==3.0.1
+WTForms @ file:///Users/ktietz/demo/mc3/conda-bld/wtforms_1629354749392/work
+zipp==3.17.0

@@ -6,12 +6,16 @@ from Forms import LoginForm, RegisterForm, InsertWord
 from passlib.hash import sha256_crypt
 from datetime import datetime
 from functools import wraps
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
 # Flask application and db connections
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://omer:123456@localhost:5432/orm_trailer"
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
+
 db = SQLAlchemy(app=app)
-app.secret_key = "secret_key"
+app.secret_key = os.getenv("SECRET_KEY")
 
 
 # User Login Decorator
